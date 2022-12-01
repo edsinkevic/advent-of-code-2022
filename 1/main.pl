@@ -1,6 +1,7 @@
 :- use_module(library(pio)).
 :- use_module(library(lists)).
 
+
 lines([])           --> call(eos), !.
 lines([Line|Lines]) --> line(Line), lines(Lines).
 
@@ -31,11 +32,13 @@ solve_part_2(Sums, Result) :-
     sum_list([First,Second,Third], Result).
 
 :-
-  phrase_from_file(lines(Lines), 'data.txt'),
-  sums(Lines, Sums),
-  solve_part_1(Sums, Result1),
-  write(Result1),
-  write(' '),
-  solve_part_2(Sums, Result2),
-  write(Result2),
-  halt.
+    phrase_from_file(lines(Lines), 'data.txt'),
+    sums(Lines, Sums),
+
+    solve_part_1(Sums, Result1),
+    writeln(Result1),
+
+    solve_part_2(Sums, Result2),
+    writeln(Result2),
+
+    halt.
