@@ -21,23 +21,21 @@ sums([L|Ls], Sum, Accum, Result) :-
     NewSum is Number + Sum,
     sums(Ls, NewSum, Accum, Result).
 
-solve_part_1(Result) :-
-    phrase_from_file(lines(Lines), 'data.txt'),
-    sums(Lines, Sums),
+solve_part_1(Sums, Result) :-
     max_list(Sums, Result).
 
-solve_part_2(Result) :-
-    phrase_from_file(lines(Lines), 'data.txt'),
-    sums(Lines, Sums),
+solve_part_2(Sums, Result) :-
     sort(Sums, Sorted),
     reverse(Sorted, Reversed),
     [First,Second,Third|_] = Reversed,
     sum_list([First,Second,Third], Result).
 
 :-
-  solve_part_1(Result1),
+  phrase_from_file(lines(Lines), 'data.txt'),
+  sums(Lines, Sums),
+  solve_part_1(Sums, Result1),
   write(Result1),
   write(' '),
-  solve_part_2(Result2),
+  solve_part_2(Sums, Result2),
   write(Result2),
   halt.
