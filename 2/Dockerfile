@@ -1,6 +1,8 @@
 FROM alpine:latest
-COPY . .
-CMD ["nasm", "-f", "elf", "main.asm"]
-CMD ["ld", "-m", "elf_i385", "-s", "-o", "main", "main.o"]
-CMD ["ls"]
-CMD ["./main", "main.asm"]
+COPY . /app
+WORKDIR /app
+RUN apk add nasm
+RUN apk add binutils
+RUN nasm -f elf main.asm
+RUN ld -m elf_i386 -s -o main main.o
+CMD ["./main", "data.txt"]
