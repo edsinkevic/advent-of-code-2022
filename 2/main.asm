@@ -1,27 +1,3 @@
-section .bss
-buffer: resb 5
-fd: resb 1
-
-section .data
-buflen: dd 4
-score:  dd 0
-dalbajob: db 'dalbajob', 0
-
-firstRockCode:  db 'A'
-firstPaperCode: db 'B'
-firstScissorCode: db 'C'
-
-secondRockCode: db 'X'
-secondPaperCode:  db 'Y'
-secondScissorCode:  db 'Z'
-rock: db 1
-paper:  db 2
-scissor:  db 3
-lineLength:  db 4
-roundScore:  db 0
-winScore:  db 6
-drawScore: db 3
-
 section .text
 global _start
 extern intToString, atoi, iprintLF, sprint, openFileByName
@@ -31,7 +7,7 @@ openFile:
   pop ebx
   pop ebx
   pop ebx                       ; file name
-  call openFileByName
+  call openFileByName           ; file descriptor in eax
   mov [fd], eax
   test eax, eax
   jns iterate
@@ -52,12 +28,11 @@ iterate:
   int 0x80
   cmp eax, 0
   je exit
-  test eax, eax
 
-  call roundResult
+  call roundResult              ;round result in al
 
   mov ah, 0
-  add [score], eax
+  add [score], ax
 
   jmp iterate
 
@@ -80,40 +55,59 @@ roundResult:
 
 rockCase:
   mov al, [rock]
-  cmp cl, [firstScissorCode]
-  je winCase
-  cmp cl, [firstPaperCode]
-  je loseCase
-  jmp drawCase
+  mov dh, [firstScissorCode]
+  mov dl, [firstPaperCode]
+  jmp win?
 
 paperCase:
   mov al, [paper]
-  cmp cl, [firstRockCode]
-  je winCase
-  cmp cl, [firstScissorCode]
-  je loseCase
-  jmp drawCase
+  mov dh, [firstRockCode]
+  mov dl, [firstScissorCode]
+  jmp win?
 
 scissorCase:
   mov al, [scissor]
-  cmp cl, [firstPaperCode]
-  je winCase
-  cmp cl, [firstRockCode]
-  je loseCase
+  mov dh, [firstPaperCode]
+  mov dl, [firstRockCode]
+  jmp win?
 
-  jmp drawCase
+win?:
+  cmp cl, dh
+  je win
+  cmp cl, dl
+  je lose
+  jmp draw
 
-winCase:
+win:
   add al, [winScore]
-  add al, [roundScore]
   ret
 
-
-loseCase:
-  add al, [roundScore]
+lose:
   ret
 
-drawCase:
+draw:
   add al, [drawScore]
-  add al, [roundScore]
   ret
+
+section .bss
+buffer: resb 5
+fd: resb 1
+
+section .data
+buflen: dd 4
+score:  dd 0
+dalbajob: db 'dalbajob', 0
+
+firstRockCode:  db 'A'
+firstPaperCode: db 'B'
+firstScissorCode: db 'C'
+
+secondRockCode: db 'X'
+secondPaperCode:  db 'Y'
+secondScissorCode:  db 'Z'
+rock: db 1
+paper:  db 2
+scissor:  db 3
+lineLength:  db 4
+winScore:  db 6
+drawScore: db 3
