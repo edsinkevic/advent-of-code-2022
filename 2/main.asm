@@ -24,7 +24,7 @@ iterate:
   mov ebx, [fd]
   mov eax, 0x03
   mov ecx, buffer
-  mov edx, [buflen]
+  mov edx, [lineLength]
   int 0x80
   cmp eax, 0
   je exit
@@ -94,9 +94,7 @@ buffer: resb 5
 fd: resb 1
 
 section .data
-buflen: dd 4
 score:  dd 0
-dalbajob: db 'dalbajob', 0
 
 firstRockCode:  db 'A'
 firstPaperCode: db 'B'
@@ -108,6 +106,6 @@ secondScissorCode:  db 'Z'
 rock: db 1
 paper:  db 2
 scissor:  db 3
-lineLength:  db 4
+lineLength:  dd 4
 winScore:  db 6
 drawScore: db 3
