@@ -1,9 +1,9 @@
 section .bss
-buffer: resb 5 ; A 2 KB byte buffer used for read
+buffer: resb 5
 fd: resb 1
 
 section .data
-buflen: dd 4 ; Size of our buffer to be used for read
+buflen: dd 4
 score:  dd 0
 dalbajob: db 'dalbajob', 0
 
@@ -27,55 +27,43 @@ global _start
 extern intToString, atoi, iprintLF, sprint, openFileByName
 
 _start:
-  ; open(char *path, int flags, mode_t mode);
-mov byte [buflen + 4], 0
-pop ebx ; argc
-pop ebx ; argv[0] (executable name)
-pop ebx ; argv[1] (desired file name)
-mov eax, 0x05 ; syscall number for open
-xor ecx, ecx ; O_RDONLY = 0
-xor edx, edx ; Mode is ignored when O_CREAT isn't specified
-int 0x80 ; Call the kernel
-mov [fd], eax
-test eax, eax ; Check the output of open()
-jns fileRead ; If the sign flag is set (positive) we can begin reading the file
+openFile:
+  pop ebx
+  pop ebx
+  pop ebx                       ; file name
+  call openFileByName
+  mov [fd], eax
+  test eax, eax
+  jns iterate
 
-; = If the output is negative, then open failed. So we should exit
 exit:
-mov eax, [score]
-call iprintLF
+  mov eax, [score]
+  call iprintLF
 
-mov eax, 0x01 ; 0x01 = syscall for exit
-xor ebx, ebx ; makes ebx technically set to zero
-int 0x80
+  mov eax, 0x01
+  xor ebx, ebx
+  int 0x80
 
-; = Begin reading the file
+iterate:
+  mov ebx, [fd]
+  mov eax, 0x03
+  mov ecx, buffer
+  mov edx, [buflen]
+  int 0x80
+  cmp eax, 0
+  je exit
+  test eax, eax
 
-fileRead:
-; read(int fd, void *buf, size_t count);
-mov ebx, [fd] ; Move our file descriptor into ebx
-mov eax, 0x03 ; syscall for read = 3
-mov ecx, buffer ; Our 2kb byte buffer
-mov edx, [buflen] ; The size of our buffer
-int 0x80
-cmp eax, 0
-je exit
-test eax, eax ; Check for errors / EOF
-jz fileOut ; If EOF, then write our buffer out.
+  call roundResult
 
-fileOut:
-; write(int fd, void *buf, size_t count);
+  mov ah, 0
+  add [score], eax
 
-call roundResult
-
-mov ah, 0
-add [score], eax
-
-jmp fileRead ; All done
+  jmp iterate
 
 roundResult:
-  mov ch, [buffer + 2]             ; first
-  mov cl, [buffer]         ; second
+  mov ch, [buffer + 2]
+  mov cl, [buffer]
 
   mov al, 0
 
@@ -88,7 +76,7 @@ roundResult:
   cmp ch, [secondScissorCode]
   je scissorCase
 
-  jmp recover
+  ret
 
 rockCase:
   mov al, [rock]
@@ -118,25 +106,14 @@ scissorCase:
 winCase:
   add al, [winScore]
   add al, [roundScore]
-  jmp recover
+  ret
 
 
 loseCase:
   add al, [roundScore]
-  jmp recover
-
+  ret
 
 drawCase:
   add al, [drawScore]
   add al, [roundScore]
-  jmp recover
-
-recover:
-  ret
-
-pr:
-  push eax
-  mov eax, dalbajob
-  call sprint
-  pop eax
   ret
