@@ -1,5 +1,5 @@
 section .text
-global intToString, openFileByName, atoi, iprintLF, sprint
+global openFileByName, iprintLF
 
 intToString:
   add esi,9
