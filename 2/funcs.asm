@@ -1,25 +1,6 @@
 section .text
 global openFileByName, iprintLF
 
-intToString:
-  add esi,9
-  mov byte [esi],0    ; String terminator
-
-  mov ebx,10
-
-.nextDigit:
-  xor edx,edx         ; Clear edx prior to dividing edx:eax by ebx
-  div ebx             ; eax /= 10
-  add dl,'0'          ; Convert the remainder to ASCII
-  dec esi             ; store characters in reverse order
-  mov [esi],dl
-  test eax,eax
-  jnz .nextDigit     ; Repeat until eax==0
-
-  ; return a pointer to the first digit (not necessarily the start of the provided buffer)
-  mov eax,esi
-  ret
-
 openFileByName:
   ; Get our command line arguments.
   mov eax, 0x05 ; syscall number for open
