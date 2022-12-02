@@ -4,5 +4,6 @@ WORKDIR /app
 RUN apk add nasm
 RUN apk add make
 RUN apk add binutils
-RUN make all
-CMD ["./main", "data.txt"]
+RUN make solve1
+RUN make solve2
+CMD ["./solve1", "data.txt", "&&", "./solve2", "data.txt"]
