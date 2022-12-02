@@ -70,7 +70,6 @@ call roundResult
 
 mov ah, 0
 add [score], eax
-call iprintLF
 
 jmp fileRead ; All done
 
