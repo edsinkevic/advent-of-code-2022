@@ -28,7 +28,6 @@ paperCase:
   mov bh, [scissor]
   mov bl, [rock]
   mov dh, [paper]
-  cmp cl, [mustLose]
   jmp win?
 
 scissorCase:

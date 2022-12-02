@@ -1,6 +1,6 @@
 section .text
 global _start
-extern intToString, atoi, iprintLF, sprint, openFileByName, rockpaperscissors
+extern iprintLF, openFileByName, rockpaperscissors
 
 _start:
 openFile:
