@@ -1,4 +1,4 @@
-      program hello
+      program solve1
          use funcs
          implicit none
 
@@ -33,5 +33,5 @@
 
          print *, sum
          close(1)
-      end program hello
+      end program solve1   
 
