@@ -3,7 +3,7 @@
          implicit none
       contains
 
-         integer function priority(firstpack, secondpack)
+         pure integer function priority(firstpack, secondpack)
             character(len=*), intent(in) :: firstpack
             character(len=*), intent(in):: secondpack
             character(len=4) :: mistake
