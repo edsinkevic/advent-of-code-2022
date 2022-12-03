@@ -2,7 +2,6 @@
 
          implicit none
       contains
-
          pure integer function priority(firstpack, secondpack)
             character(len=*), intent(in) :: firstpack, secondpack
             character(len=4) :: mistake, notfound
@@ -25,14 +24,14 @@
 
          end function priority
 
-         integer function priority2(first, second, third)
+         pure integer function priority2(first, second, third)
             character(len=*), intent(in) :: first, second, third
-            character(len=4) :: solution, notfound, currentchar
+            character(len=4) :: solution, currentchar
             integer :: packlength, secondresult, thirdresult, i
             character(len=100) :: types
 
-            notfound = "None"
             packlength = len_trim(first)
+
             types = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
             do i = 0, packlength
