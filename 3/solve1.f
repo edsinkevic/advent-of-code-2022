@@ -2,20 +2,14 @@
          use funcs
          implicit none
 
-         integer :: stat
-         character(len=200) :: twopacks
-         character(len=200) :: firstpack
-         character(len=200) :: secondpack
-         character(len=200) :: line
-         integer :: packlength
-         integer :: twopackslength
-         integer :: sum = 0
+         character(len=200) :: twopacks, firstpack, secondpack, line
+         integer :: status, packlength, twopackslength, sum = 0
 
          open(1, file = "data.txt", status = "old")
 
          do
-            read(1, '(A)', IOSTAT = stat) line
-            if (IS_IOSTAT_END(stat)) exit
+            read(1, '(A)', IOSTAT = status) line
+            if (IS_IOSTAT_END(status)) exit
 
             twopacks = trim(line)
 

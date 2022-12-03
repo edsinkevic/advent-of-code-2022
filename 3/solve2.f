@@ -2,9 +2,8 @@
          use funcs
          implicit none
 
-         integer :: stat
          character(len=200) :: first, second, third
-         integer :: sum = 0
+         integer :: stat, sum = 0
 
          open(1, file = "data.txt", status = "old")
 
