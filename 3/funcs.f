@@ -4,11 +4,11 @@
       contains
          pure integer function priority(firstpack, secondpack)
             character(len=*), intent(in) :: firstpack, secondpack
-            character(len=4) :: mistake, notfound
+            character(len=4) :: mistake
             integer :: packlength, indexresult, i
             character(len=100) :: types
 
-            notfound = "None"
+            mistake = "None"
             packlength = len_trim(firstpack)
             types = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
