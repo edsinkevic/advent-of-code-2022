@@ -1,91 +1,53 @@
-Object subclass: Solution [
-                 solve [ :detector |
-                 file := FileStream open: 'data.txt' mode: FileStream read.
-                 count := 0.
-                 file linesDo: [ 
-                 :line | 
-                 assignments := line substrings: ','.
-                 firstAssignment := assignments first. 
-                 secondAssignment := assignments last.
-                 first := firstAssignment substrings: '-'.
-                 second := secondAssignment substrings: '-'.
-                 firstMin := first first asInteger.
-                 firstMax := first last asInteger.
-                 secondMin := second first asInteger.
-                 secondMax := second last asInteger.
+file := FileStream open: 'data.txt' mode: FileStream read.
+count := 0.
+file linesDo: [ 
+  :line | 
+  assignments := line substrings: ','.
+  firstAssignment := assignments first. 
+  secondAssignment := assignments last.
+  first := firstAssignment substrings: '-'.
+  second := secondAssignment substrings: '-'.
+  firstMin := first first asInteger.
+  firstMax := first last asInteger.
+  secondMin := second first asInteger.
+  secondMax := second last asInteger.
+  overlapFirst := (firstMin <= secondMin) & (firstMax >= secondMax).
+  overlapSecond := (secondMin <= firstMin) & (secondMax >= firstMax).
 
-                 detector detect: firstMin firstMax secondMin secondMax ifTrue: [
-                   count := count + 1.
-                 ].
-                 ].
+  overlap := overlapSecond | overlapFirst.
 
-                 count displayNl.
+  overlap ifTrue: [
+    count := count + 1.
+  ].
+].
 
-                 file close.
+count displayNl.
 
-                 ]
-                 ]
+file close.
 
-                 Object subclass: OverlapDetector [
-                                  detect [ :firstMin :firstMax :secondMin :secondMax |
-                                  overlapFirst := (firstMin <= secondMin) & (firstMax >= secondMax).
-                                  overlapSecond := (secondMin <= firstMin) & (secondMax >= firstMax).
+file := FileStream open: 'data.txt' mode: FileStream read.
+count := 0.
+file linesDo: [ 
+  :line | 
+  firstAssignment := (line substrings: ',') first. 
+  secondAssignment := (line substrings: ',') last.
+  first := firstAssignment substrings: '-'.
+  second := secondAssignment substrings: '-'.
+  firstMin := first first asInteger.
+  firstMax := first last asInteger.
+  secondMin := second first asInteger.
+  secondMax := second last asInteger.
+  overlap := 
+  (firstMin between: secondMin and: secondMax) | 
+  (firstMax between: secondMin and: secondMax) |
+  (secondMin between: firstMin and: firstMax) | 
+  (secondMax between: firstMin and: firstMax).
 
-                                  overlap := overlapSecond | overlapFirst.
-                                  ^overlap
-                                  ]
-                 ]
+  overlap ifTrue: [
+    count := count + 1.
+  ].
+].
 
-                 file := FileStream open: 'data.txt' mode: FileStream read.
-                 count := 0.
-                 file linesDo: [ 
-                   :line | 
-                   assignments := line substrings: ','.
-                   firstAssignment := assignments first. 
-                   secondAssignment := assignments last.
-                   first := firstAssignment substrings: '-'.
-                   second := secondAssignment substrings: '-'.
-                   firstMin := first first asInteger.
-                   firstMax := first last asInteger.
-                   secondMin := second first asInteger.
-                   secondMax := second last asInteger.
-                   overlapFirst := (firstMin <= secondMin) & (firstMax >= secondMax).
-                   overlapSecond := (secondMin <= firstMin) & (secondMax >= firstMax).
+count displayNl.
 
-                   overlap := overlapSecond | overlapFirst.
-
-                   overlap ifTrue: [
-                     count := count + 1.
-                   ].
-                 ].
-
-                 count displayNl.
-
-                 file close.
-
-                 file := FileStream open: 'data.txt' mode: FileStream read.
-                 count := 0.
-                 file linesDo: [ 
-                   :line | 
-                   firstAssignment := (line substrings: ',') first. 
-                   secondAssignment := (line substrings: ',') last.
-                   first := firstAssignment substrings: '-'.
-                   second := secondAssignment substrings: '-'.
-                   firstMin := first first asInteger.
-                   firstMax := first last asInteger.
-                   secondMin := second first asInteger.
-                   secondMax := second last asInteger.
-                   overlap := 
-                   (firstMin between: secondMin and: secondMax) | 
-                   (firstMax between: secondMin and: secondMax) |
-                   (secondMin between: firstMin and: firstMax) | 
-                   (secondMax between: firstMin and: firstMax).
-
-                   overlap ifTrue: [
-                     count := count + 1.
-                   ].
-                 ].
-
-                 count displayNl.
-
-                 file close.
+file close.
