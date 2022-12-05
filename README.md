@@ -10,8 +10,7 @@ Each puzzle has it's own Dockerfile, so you run every puzzle by running a script
 - 2 32bit Intel NASM
 - 3 GNUFortran
 - 4 Smalltalk
-- 5 Ada
-- C
+- 5 C
 - Common lisp
 - Clojure
 - Scheme
