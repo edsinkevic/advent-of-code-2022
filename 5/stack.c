@@ -43,7 +43,7 @@ void sfree(struct Stack stack) {
   }
 }
 
-struct Stack sinit(int index) {
+struct Stack sinit() {
   struct Stack stack;
   stack.head = NULL;
   return stack;
