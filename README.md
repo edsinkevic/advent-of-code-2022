@@ -11,6 +11,7 @@ Each puzzle has it's own Dockerfile, so you run every puzzle by running a script
 - 3 GNUFortran
 - 4 Smalltalk
 - 5 C
+- 6 PHP
 - Common lisp
 - Clojure
 - Scheme
@@ -19,13 +20,11 @@ Each puzzle has it's own Dockerfile, so you run every puzzle by running a script
 - Haskell
 - OCaml
 - Nim
-- Nix
 - Java
 - Scala
 - Rust
 - C++
 - Javascript/Typescript
-- PHP
 - Perl
 - Erlang
 - Elixir
