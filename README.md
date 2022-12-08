@@ -12,6 +12,7 @@ Each puzzle has it's own Dockerfile, so you run every puzzle by running a script
 - 4 Smalltalk
 - 5 C
 - 6 PHP
+- 7 Perl
 - Common lisp
 - Clojure
 - Scheme
@@ -25,7 +26,6 @@ Each puzzle has it's own Dockerfile, so you run every puzzle by running a script
 - Rust
 - C++
 - Javascript/Typescript
-- Perl
 - Erlang
 - Elixir
 - Kotlin
