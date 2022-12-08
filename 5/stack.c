@@ -3,6 +3,11 @@
 #include <string.h>
 #include "stack.h"
 
+struct Node {
+  char value;
+  struct Node *next;
+};
+
 void sprint(struct Stack stack) {
   struct Node *head = stack.head;
 

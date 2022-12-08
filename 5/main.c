@@ -167,9 +167,7 @@ char **read_stack_rows(FILE* file, int *row_count) {
 }
 
 struct Stack construct_stack(char **rows, int count, int column) {
-  int index = rows[count-1][column] - '0';
   struct Stack stack = sinit();
-
   for (int i = count - 2; i >= 0; i--)
     if(rows[i][column] != ' ')
       spush(&stack, rows[i][column]);
@@ -181,8 +179,8 @@ struct Stack *construct_stacks(char **rows, int count, int *stack_count) {
   struct Stack *stacks = malloc(0);
   int stack_amount = 0;
   char *indexes = rows[count - 1];
-  int n = strlen(indexes);
-  for (int i = 0; i < strlen(indexes); i++)
+  int index_row_length = strlen(indexes);
+  for (int i = 0; i < index_row_length; i++)
     if (indexes[i] != ' ') {
       stacks = realloc(stacks, sizeof *stacks * (stack_amount + 1));
       stacks[stack_amount] = construct_stack(rows, count, i);
