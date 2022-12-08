@@ -10,24 +10,24 @@ my $file_name = "data.txt";
 my %state = ();
 my $pwd = "";
 
-sub is_cd {
+sub extract_cd_arg {
   my ($line) = @_;
   return $line =~ m/cd (\S*)/;
 }
 
-sub is_dir {
+sub extract_dir_name {
   my ($line) = @_;
   return $line =~ m/dir (\S*)/;
 }
 
-sub is_file {
+sub extract_size {
   my ($line) = @_;
   return $line =~ m/(\d*)/;
 }
 
 sub prev_dir {
   my ($path) = @_;
-  my ($new_path) = ($path =~ m/(.*[^a-z]+)/);
+  my ($new_path) = $path =~ m/(.*[^a-z]+)/;
   if(length($new_path) > 1) {
     chop($new_path);
   }
@@ -36,12 +36,7 @@ sub prev_dir {
 
 sub concat_dirs {
   my ($pwd, $arg) = @_;
-
-  if($pwd eq "/") {
-    return "$pwd$arg";
-  }
-
-  return "$pwd/$arg";
+  return ($pwd eq "/") ? "$pwd$arg": "$pwd/$arg";
 }
 
 sub cd {
@@ -58,37 +53,42 @@ sub cd {
   return concat_dirs($pwd, $arg)
 }
 
-sub interpret_cmd {
+sub interpret_line {
   my ($line) = @_;
-  my $arg;
-  if(($arg) = is_cd($line)) {
+
+  if(my ($arg) = extract_cd_arg($line)) {
     $pwd = cd($arg, $pwd);
     return;
   }
-
-  my ($name) = is_dir($line);
-  if($name) {
+  
+  if(my ($name) = extract_dir_name($line)) {
     my $path = concat_dirs($pwd, $name);
     push @{ $state{$pwd} }, $path;
+    return;
   }
-
-  my ($size) = is_file($line);
-  if($size) {
+  
+  if(my ($size) = extract_size($line)) {
     push @{ $state{$pwd} }, $size;
+    return;
+  }
+}
+
+sub interpret_file {
+  my ($file_name) = @_;
+  # my %state = ();
+
+  open(file_handler, '<', $file_name) or die $!;
+
+  my $line = <file_handler>;
+  while($line){
+    interpret_line($line);
+    $line = <file_handler>;
   }
 
-  return;
+  close(file_handler);
 }
 
-
-open(file_handler, '<', $file_name) or die $!;
-
-my $line = <file_handler>;
-
-while($line){
-  interpret_cmd($line);
-  $line = <file_handler>;
-}
+interpret_file("data.txt");
 
 sub sum {
   my ($key) = @_;
@@ -130,6 +130,5 @@ foreach my $key (keys %state) {
 
 print "$result\n";
 
-close(file_handler);
 
 
