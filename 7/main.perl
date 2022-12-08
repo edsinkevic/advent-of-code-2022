@@ -5,11 +5,6 @@ use strict;
 use Data::Dumper;
 use Scalar::Util qw(looks_like_number);
 
-my $file_name = "data.txt";
-
-my %state = ();
-my $pwd = "";
-
 sub extract_cd_arg {
   my ($line) = @_;
   return $line =~ m/cd (\S*)/;
@@ -54,81 +49,94 @@ sub cd {
 }
 
 sub interpret_line {
-  my ($line) = @_;
+  my ($line, $pwd, %state) = @_;
 
   if(my ($arg) = extract_cd_arg($line)) {
-    $pwd = cd($arg, $pwd);
-    return;
+    return (cd($arg, $pwd), %state);
   }
   
   if(my ($name) = extract_dir_name($line)) {
     my $path = concat_dirs($pwd, $name);
     push @{ $state{$pwd} }, $path;
-    return;
+    return ($pwd, %state);
   }
   
   if(my ($size) = extract_size($line)) {
     push @{ $state{$pwd} }, $size;
-    return;
+    return ($pwd, %state);
   }
 }
 
 sub interpret_file {
   my ($file_name) = @_;
-  # my %state = ();
+  my %state = ();
+  my $pwd = "";
 
   open(file_handler, '<', $file_name) or die $!;
 
   my $line = <file_handler>;
   while($line){
-    interpret_line($line);
+    ($pwd, %state) = interpret_line($line, $pwd, %state);
     $line = <file_handler>;
   }
 
   close(file_handler);
+  return %state;
 }
 
-interpret_file("data.txt");
 
 sub sum {
-  my ($key) = @_;
+  my ($key, %state) = @_;
   my $sum = 0;
   foreach my $elem (@{ $state{$key} }) {
     if(!looks_like_number($elem)) {
-      $sum = $sum + sum($elem);
+      (my $result, %state) = sum($elem, %state);
+      $sum = $sum + $result;
     }
     else {
       $sum = $sum + $elem;
     }
   }
-  return $sum;
+
+  @{ $state{$key} } = ($sum);
+  return ($sum, %state);
 }
 
-my $result = 0;
 
-foreach my $key (keys %state) {
-  my $sum = sum($key);
-  # print "Sum: $sum\n";
-  my $add = $sum < 100000 ? $sum : 0;
-  $result = $result + $add;
-}
+sub solve1 {
+  my (%state) = @_;
+  my $result = 0;
 
-print "$result\n";
-
-my $full_size = 70000000;
-$result = $full_size;
-my $free_space = $full_size - sum("/");
-my $goal = 30000000;
-
-foreach my $key (keys %state) {
-  my $sum = sum($key);
-  my $potential_free = $free_space + $sum;
-  if ($sum <= $result && $potential_free > $goal) {
-    $result = $sum;
+  foreach my $key (keys %state) {
+    (my $sum, %state) = sum($key, %state);
+    my $add = $sum < 100000 ? $sum : 0;
+    $result = $result + $add;
   }
+  return ($result, %state);
 }
 
+sub solve2 {
+  my (%state) = @_;
+  my $full_size = 70000000;
+  my $result = $full_size;
+  (my $taken_space, %state) = sum("/", %state);
+  my $free_space = $full_size - $taken_space;
+  my $goal = 30000000;
+
+  foreach my $key (keys %state) {
+    (my $sum, %state) = sum($key, %state);
+    my $potential_free = $free_space + $sum;
+    if ($sum <= $result && $potential_free > $goal) {
+      $result = $sum;
+    }
+  }
+  return ($result, %state);
+}
+
+my %state = interpret_file("data.txt");
+
+(my $result, %state) = solve1(%state);
 print "$result\n";
 
-
-
+($result, %state) = solve2(%state);
+print "$result\n";
